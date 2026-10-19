@@ -10,23 +10,26 @@ import {
     Form,
     Input,
     Label,
-    TextArea,
+
     TextField,
 } from "@heroui/react";
 
 export default function Basic() {
-    const onSubmit = (e) => {
+    const onSubmit = async (e) => {
         e.preventDefault();
         const formData = new FormData(e.currentTarget);
-        const data = {};
+        const data = Object.fromEntries(formData.entries());
 
-        // Convert FormData to plain object
-        formData.forEach((value, key) => {
-            data[key] = value.toString();
-        });
+        const res = await fetch('http://localhost:5000/deshbord', {
+            method: "post",
+            headers: {
+                "Content-type": "application/json",
+            },
+            body: JSON.stringify(data)
+        })
+        const result = await res.json()
+        console.log('after submit', result);
 
-        console.log("Form submitted successfully!", data);
-        
     };
 
     return (
@@ -54,7 +57,7 @@ export default function Basic() {
                         <Input placeholder="john@example.com" />
                         <FieldError />
                     </TextField>
-                    
+
                 </FieldGroup>
                 <Fieldset.Actions>
                     <Button type="submit">
